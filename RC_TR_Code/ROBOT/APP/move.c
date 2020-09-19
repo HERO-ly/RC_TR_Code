@@ -105,6 +105,7 @@ void Kick_UP(void)
 	
 	if(num==0)
 	{
+		moto_dir_ctl[4].abs_angle=0;
 		num=Tar_quan+1;
 	}
 	if(num==1)
@@ -123,13 +124,13 @@ void Kick_UP(void)
 
 void Open_underdoor(void)
 {
-	Door_PWM=2500;
+	Door_PWM=500;
 	TIM_SetCompare1(TIM3,Door_PWM);
 }
 
 void Close_underdoor(void)
 {
-	Door_PWM=1000;
+	Door_PWM=1800;
 	TIM_SetCompare1(TIM3,Door_PWM);
 }
 void Limit_Speed_Angle()				//≤‚ ‘±£ª§¥˙¬Î

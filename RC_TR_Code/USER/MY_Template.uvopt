@@ -191,12 +191,12 @@
         <Ww>
           <count>0</count>
           <WinNumber>1</WinNumber>
-          <ItemText>TTEST</ItemText>
+          <ItemText>Door_PWM,0x0A</ItemText>
         </Ww>
         <Ww>
           <count>1</count>
           <WinNumber>1</WinNumber>
-          <ItemText>ledPWM,0x0A</ItemText>
+          <ItemText>TTEST</ItemText>
         </Ww>
       </WatchWindow1>
       <Tracepoint>
