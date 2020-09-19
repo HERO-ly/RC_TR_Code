@@ -96,28 +96,28 @@ void Check_ball()
 		Mode2_state=1;
 	}
 }
-u8 Tar_quan=15;					//²âÊÔÈ¦Êý
+u8 Tar_quan=5;					//²âÊÔÈ¦Êý
 void Kick_UP(void)
 {
-//	extern motoinfo moto_dir_ctl[5];
-//	extern s32 Target_kick;
-//	static u8 num=0;
-//	
-//	if(num==0)
-//	{
-//		num=Tar_quan+1;
-//	}
-//	if(num==1)
-//	{
-//	//	TTEST=1;
-//		num=0;
-//		return ;
-//	}
-//	if(moto_dir_ctl[4].abs_angle>=Target_kick*0.95)
-//	{
-//		num--;
-//		moto_dir_ctl[4].abs_angle=0;
-//	}
+	extern motoinfo moto_dir_ctl[5];
+	extern s32 Target_kick;
+	static u8 num=0;
+	
+	if(num==0)
+	{
+		num=Tar_quan+1;
+	}
+	if(num==1)
+	{
+		TTEST=1;
+		num=0;
+		return ;
+	}
+	if(moto_dir_ctl[4].abs_angle>=Target_kick*0.9)
+	{
+		num--;
+		moto_dir_ctl[4].abs_angle=0;
+	}
 	PID_Kick_Send();
 }
 
