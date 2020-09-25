@@ -13,6 +13,7 @@ s32 last_angle_temp[5]={0};
 void RX_Analysis_Angle(u8 *msg,u32 StdId_Num)
 {
 	extern motoinfo moto_dir_ctl[5];
+	extern motoinfo moto_dir_ctl_temp;
 	u16 temp=0;
 	
 	moto_dir_ctl[StdId_Num-0x201].present_angle=msg[1];temp=msg[0];
@@ -52,6 +53,8 @@ void RX_Analysis_Angle(u8 *msg,u32 StdId_Num)
 	moto_dir_ctl[StdId_Num-0x201].electric=moto_dir_ctl[StdId_Num-0x201].electric|(temp<<8);
 	moto_dir_ctl[StdId_Num-0x201].temtpratrue=msg[6];
 	last_angle_temp[StdId_Num-0x201]=moto_dir_ctl[StdId_Num-0x201].present_angle;
+	
+	if(StdId_Num==0x202) moto_dir_ctl_temp=moto_dir_ctl[StdId_Num-0x201];
 }
 
 void RX_Analysis_Speed(u8 *msg,u32 StdId_Num)

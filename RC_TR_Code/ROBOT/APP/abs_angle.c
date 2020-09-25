@@ -93,7 +93,7 @@ void Origin_Angle_check()
 	
 	for(i=0;i<4;i++)
 	{
-		if((Origin_Angle[i]>60000&&Origin_Angle[i]<75000)||(Origin_Angle[i]<-60000&&Origin_Angle[i]>-750000))
+		if((Origin_Angle[i]>60000&&Origin_Angle[i]<75000)||(Origin_Angle[i]<-60000&&Origin_Angle[i]>-75000))
 		{										//这个范围是我检测过程中记录过的数据, 正常合适的数据绝对值应该在67000到68000, 以后合适了后可以适当缩小范围
 			if(Origin_Angle[i]<0)				//取绝对值
 			{
@@ -111,12 +111,12 @@ void Origin_Angle_check()
 	}
 	for(i=0;i<4;i++)
 	{
-		if(temp[i]!=0&&temp[i]!=1)
+		if(temp[i]!=0&&temp[i]!=-1)
 		{
 			temp_AngleProportion+=temp[i];		//累加有效值
 			div++;
 		}
-	}AngleProportion=temp_AngleProportion/div/120;	//计算有效值
+	}AngleProportion=temp_AngleProportion/div/150;	//计算有效值
 }
 
 

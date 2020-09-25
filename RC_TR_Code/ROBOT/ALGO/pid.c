@@ -6,10 +6,11 @@ PID pid_kick[2];
 
 s32 TragetAngle[4]={0,0,0,0};					//目标角度初始化
 s32 TragetSpeed[4]={-1000,-1000,-1000,-1000};	//目标速度初始化
+s32 temp_tar=0;
 s32 Target_kick=65000;
 extern s8 Tx_Msg_Speed[8];						//CAN1发送数据串
 extern s8 Tx_Msg_Angle[8];						//CAN2发送数据串
-u32 PID_OUTPUT_LIMIT=4000;						//PID的最大输出值
+u32 PID_OUTPUT_LIMIT=5000;						//PID的最大输出值
 
 extern motoinfo moto_dir_ctl[5];				//外部引用方向电机的电机数据
 extern motoinfo moto_speed_ctl[4];				//外部引用动力电机的电机数据
@@ -34,7 +35,7 @@ void Circle_Init(u8 Mode_Angle_Speed)
 	{
 //方向电机速度环初始化	PID *pid_val				Kp		Ki			Kd			error_max		dead_line	intergral_max	output_max
 		PID_Init(			&pid_position[1],		15,		0.5,		0.5,		5000,			0,			5000,			PID_OUTPUT_LIMIT/2	);
-		PID_Init(			&pid_position[3],		25,		0.5,		0.5,		5000,			0,			5000,			PID_OUTPUT_LIMIT/2	);
+		PID_Init(			&pid_position[3],		25,		0.5,		0.5,		5000,			0,			5000,			PID_OUTPUT_LIMIT/3	);
 		PID_Init(			&pid_position[5],		25,		0.5,		0.5,		5000,			0,			5000,			PID_OUTPUT_LIMIT/2	);
 		PID_Init(			&pid_position[7],		25,		0.5,		0.5,		5000,			0,			5000,			PID_OUTPUT_LIMIT	);
 //	这边用到了1 3 5 7的结构体数组, 是因为0 2 4 6到时候会储存位置环的参数
@@ -49,14 +50,14 @@ void Circle_Init(u8 Mode_Angle_Speed)
 	else 
 	{
 //方向电机位置环初始化	PID *pid_val				Kp		Ki			Kd			error_max		dead_line	intergral_max	output_max
-		PID_Init(			&pid_position[0],		0.21,	0.0028,		0,			5000,			0,			5000,			PID_OUTPUT_LIMIT	);
+		PID_Init(			&pid_position[0],		0.31,	0.05,		0,			5000,			0,			5000,			PID_OUTPUT_LIMIT	);
 		PID_Init(			&pid_position[1],		10,		0,			0,			5000,			0,			5000,			PID_OUTPUT_LIMIT	);
-		PID_Init(			&pid_position[2],		0.3,	0.0020,		0,			5000,			0,			5000,			PID_OUTPUT_LIMIT	);
+		PID_Init(			&pid_position[2],		0.31,	0.05,		0,			5000,			0,			5000,			PID_OUTPUT_LIMIT	);
 		PID_Init(			&pid_position[3],		10,		0,			0,			5000,			0,			5000,			PID_OUTPUT_LIMIT	);
-		PID_Init(			&pid_position[4],		0.3,	0.002,		0,			5000,			0,			5000,			PID_OUTPUT_LIMIT	);
+		PID_Init(			&pid_position[4],		0.31,	0.05,		0,			5000,			0,			5000,			PID_OUTPUT_LIMIT	);
 		PID_Init(			&pid_position[5],		10,		0,			0,			5000,			0,			5000,			PID_OUTPUT_LIMIT	);
-		PID_Init(			&pid_position[6],		0.30,	0.0010,		0,			5000,			0,			5000,			PID_OUTPUT_LIMIT	);
-		PID_Init(			&pid_position[7],		15,		0,			0,			5000,			0,			5000,			PID_OUTPUT_LIMIT	);
+		PID_Init(			&pid_position[6],		0.31,	0.05,		0,			5000,			0,			5000,			PID_OUTPUT_LIMIT	);
+		PID_Init(			&pid_position[7],		10,		0,			0,			5000,			0,			5000,			PID_OUTPUT_LIMIT	);
 //	0 2 4 6数组存位置环参数, 1 3 5 7数组存速度环参数
 		
 //	速度电机速度环初始化	PID *pid_val			Kp		Ki			Kd			error_max		dead_line	intergral_max	output_max
@@ -185,7 +186,7 @@ void SEND_PID()
 	PID_General_Cal(&pid_position[2],moto_dir_ctl[1].abs_angle,TragetAngle[1],1,Tx_Msg_Angle);
 	PID_General_Cal(&pid_position[4],moto_dir_ctl[2].abs_angle,TragetAngle[2],2,Tx_Msg_Angle);
 	PID_General_Cal(&pid_position[6],moto_dir_ctl[3].abs_angle,TragetAngle[3],3,Tx_Msg_Angle);
-	
+	temp_tar=TragetAngle[1];
 //	利用位置环的数值进行速度环计算
 	PID_General_Cal(&pid_position[1],moto_dir_ctl[0].speed,pid_position[0].output,0,Tx_Msg_Angle);
 	PID_General_Cal(&pid_position[3],moto_dir_ctl[1].speed,pid_position[2].output,1,Tx_Msg_Angle);

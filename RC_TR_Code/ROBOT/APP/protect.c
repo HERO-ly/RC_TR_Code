@@ -51,7 +51,7 @@ void Check_Task(void)
 	}
 	else if(Error_Check.statu[LOST_KICK]==1)
 	{//踢球电机出现错误
-//			SetWorkState(LOST_CAN2_STATE);				//由于踢球电机CAN未定, 所以待修改
+			SetWorkState(LOST_CAN2_STATE);				//由于踢球电机CAN未定, 所以待修改
 	}
 	else if(Error_Check.statu[LOST_TRANSMISSION]==1)
 	{//主副板 通信失败 
