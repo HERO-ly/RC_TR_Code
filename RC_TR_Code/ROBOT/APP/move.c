@@ -9,6 +9,7 @@ u8 Work_mode=0;
 u8 Mode2_state=0;
 u32 Door_PWM=1500;
 u8 TTEST=0;	//调试
+
 void Move_Mode_Check()
 {
 	extern u8 Abs_Angle_State;
@@ -96,30 +97,41 @@ void Check_ball()
 		Mode2_state=1;
 	}
 }
-u8 Tar_quan=1;					//测试圈数
+u8 TAR_START=0;					//测试圈数
+s32 TAR_KICI_ANGLE=200000;
+u8 KICK_num=0;
 void Kick_UP(void)
 {
 	extern motoinfo moto_dir_ctl[5];
-	extern s32 Target_kick;
-	static u8 num=0;
 	
-	if(num==0)
+	if(KICK_num==0)
 	{
 		moto_dir_ctl[4].abs_angle=0;
-		num=Tar_quan+1;
-	}
-	if(num==1)
+		KICK_num=1;
+		Kick_Init();
+	}if(TAR_START)
 	{
+		TAR_KICI_ANGLE=560000;
+	}
+	if(moto_dir_ctl[4].abs_angle>=560000*0.95)
+	{
+		DIS_Kick_Init();
+		KICK_num=0;
 		TTEST=1;
-		num=0;
-		return ;
 	}
-	if(moto_dir_ctl[4].abs_angle>=Target_kick*0.9)
-	{
-		num--;
-		moto_dir_ctl[4].abs_angle=0;
-	}
-	PID_Kick_Send();
+//	if(num==1)
+//	{
+//		TTEST=1;
+//		num=0;
+//		return ;
+//	}
+//	if(moto_dir_ctl[4].abs_angle>=Temp_kick*0.9)
+//	{
+//		num--;
+//		Temp_kick-=moto_dir_ctl[4].abs_angle;
+//		moto_dir_ctl[4].abs_angle=0;
+//	}
+	PID_Kick_Send(TAR_KICI_ANGLE);
 }
 
 void Open_underdoor(void)
@@ -133,6 +145,7 @@ void Close_underdoor(void)
 	Door_PWM=1800;
 	TIM_SetCompare1(TIM3,Door_PWM);
 }
+
 void Limit_Speed_Angle()				//测试保护代码
 {
 	s32 SpeedLimit=7000;

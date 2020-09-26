@@ -7,7 +7,7 @@ PID pid_kick[2];
 s32 TragetAngle[4]={0,0,0,0};					//目标角度初始化
 s32 TragetSpeed[4]={-1000,-1000,-1000,-1000};	//目标速度初始化
 s32 temp_tar=0;
-s32 Target_kick=300000;
+s32 Target_kick=550000;
 extern s8 Tx_Msg_Speed[8];						//CAN1发送数据串
 extern s8 Tx_Msg_Angle[8];						//CAN2发送数据串
 u32 PID_OUTPUT_LIMIT=5000;						//PID的最大输出值
@@ -237,13 +237,19 @@ void Abs_Angle_Init()
 void Kick_Init(void)
 {
 		PID_Init(			&pid_kick[0],		0.21,		0.001,		0,			5000,			0,			5000,			PID_OUTPUT_LIMIT+3000	);
-		PID_Init(			&pid_kick[1],		10,		0,			0,			5000,			0,			5000,			PID_OUTPUT_LIMIT+3000	);
+		PID_Init(			&pid_kick[1],		15,		0.1,			0,			6000,			0,			6000,			13000	);
 }
 
-void PID_Kick_Send(void)
+void DIS_Kick_Init(void)
+{
+		PID_Init(			&pid_kick[0],		0,		0,			0,			0,			0,			0,			0	);
+		PID_Init(			&pid_kick[1],		0,		0,			0,			0,			0,			0,			0	);
+}
+
+void PID_Kick_Send(s32 Tar)
 {
 	s8 Tx_Msg_Angle_kick[8]={0,0,0,0,0,0,0,0};
-	PID_General_Cal(&pid_kick[0],moto_dir_ctl[4].abs_angle,Target_kick,0,Tx_Msg_Angle_kick);
+	PID_General_Cal(&pid_kick[0],moto_dir_ctl[4].abs_angle,Tar,0,Tx_Msg_Angle_kick);
 	PID_General_Cal(&pid_kick[1],moto_dir_ctl[4].speed,pid_kick[0].output,0,Tx_Msg_Angle_kick);
 	CAN2_Send_Angle_Kick(Tx_Msg_Angle_kick,8);
 }

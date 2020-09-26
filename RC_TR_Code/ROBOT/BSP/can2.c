@@ -101,7 +101,7 @@ void CAN2_RX0_IRQHandler(void)
 	if (StdId_Num >=0x201 && StdId_Num <= 0x205)
 	{
 		RX_Analysis_Angle(RxMessage.Data,StdId_Num);
-		LostCountFeed(&Error_Check.count[StdId_Num-0x201]);	//检测是否CAN2掉线
+		//LostCountFeed(&Error_Check.count[StdId_Num-0x201]);	//检测是否CAN2掉线
 	}
 	CAN_ClearITPendingBit(CAN2,CAN_IT_FMP0);				//清除中断标志位
 }
