@@ -23,6 +23,7 @@
 motoinfo moto_dir_ctl[5];				//方向电机反馈信号
 motoinfo moto_speed_ctl[4];				//动力电机反馈信号
 motoinfo moto_dir_ctl_temp;
+motoinfo moto_speed_ctl_temp;
 int main(void)
 {
 	BSP_Init();

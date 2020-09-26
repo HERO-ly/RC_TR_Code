@@ -60,6 +60,8 @@ void RX_Analysis_Angle(u8 *msg,u32 StdId_Num)
 void RX_Analysis_Speed(u8 *msg,u32 StdId_Num)
 {
 	extern motoinfo moto_speed_ctl[4];
+	extern motoinfo moto_speed_ctl_temp;
+	
 	u16 temp=0;
 	moto_speed_ctl[StdId_Num-0x201].present_angle=msg[1];temp=msg[0];
 	moto_speed_ctl[StdId_Num-0x201].present_angle=moto_speed_ctl[StdId_Num-0x201].present_angle|(temp<<8);
@@ -68,6 +70,7 @@ void RX_Analysis_Speed(u8 *msg,u32 StdId_Num)
 	moto_speed_ctl[StdId_Num-0x201].electric=msg[5];temp=msg[4];
 	moto_speed_ctl[StdId_Num-0x201].electric=moto_speed_ctl[StdId_Num-0x201].electric|(temp<<8);
 	moto_speed_ctl[StdId_Num-0x201].temtpratrue=msg[6];
+	if(StdId_Num==0x202) moto_speed_ctl_temp=moto_speed_ctl[StdId_Num-0x201];
 }
 
 

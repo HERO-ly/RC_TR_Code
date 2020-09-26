@@ -96,7 +96,7 @@ void Check_ball()
 		Mode2_state=1;
 	}
 }
-u8 Tar_quan=5;					//ฒโสิศฆสý
+u8 Tar_quan=1;					//ฒโสิศฆสý
 void Kick_UP(void)
 {
 	extern motoinfo moto_dir_ctl[5];
