@@ -22,14 +22,12 @@ void Move_Mode_Check()
 		case 0:														//"0"模式   等待上位机发送信号 
 		{
 			StopMove();
-			SEND_PID();												//正式情况中暂定不调用, 也可能调用(到时候看效果), 调试过程中, 先放着,
 			Work_mode=0;
 			break;
 		}
 		case 1:														//"1" 模式  底盘运动
 		{
 			Speed_analysis();										//分析上位机传来的速度数据
-			SEND_PID();												//发送
 			Work_mode=1;	
 			Mode2_state = 0;
 			break;
@@ -60,14 +58,13 @@ void Move_Mode_Check()
 		}
 		case 6:														//"5"模式  电机释放弹簧
 		{	
-			//KICK_OUT();
-			Work_mode=5;
+			Kick_OUT();
+			Work_mode=6;
 			break;
 		}
 		default:
 			break;
-			
-	}
+	}SEND_PID();
 }
 
 /*--------------------
@@ -109,15 +106,7 @@ void Kick_UP(void)
 		moto_dir_ctl[4].abs_angle=0;
 		KICK_num=1;
 		Kick_Init();
-	}if(TAR_START)
-	{
-		TAR_KICI_ANGLE=560000;
-	}
-	if(moto_dir_ctl[4].abs_angle>=560000*0.95)
-	{
-		DIS_Kick_Init();
-		KICK_num=0;
-		TTEST=1;
+		TAR_START=0;
 	}
 //	if(num==1)
 //	{
@@ -132,6 +121,23 @@ void Kick_UP(void)
 //		moto_dir_ctl[4].abs_angle=0;
 //	}
 	PID_Kick_Send(TAR_KICI_ANGLE);
+}
+
+void Kick_OUT(void)
+{
+	extern motoinfo moto_dir_ctl[5];
+	TAR_START=1;
+	
+	if(TAR_START)
+	{
+		TAR_KICI_ANGLE=560000;
+	}
+	if(moto_dir_ctl[4].abs_angle>=560000*0.95)
+	{
+		DIS_Kick_Init();
+		KICK_num=0;
+		TTEST=1;
+	}PID_Kick_Send(TAR_KICI_ANGLE);
 }
 
 void Open_underdoor(void)

@@ -17,6 +17,7 @@ void Move_ModeTurn_MiddleLine(void);
 void Move_ModeTurn_CtlPole(void);
 void Move_ModePassing(void);
 void Kick_UP(void);
+void Kick_OUT(void);
 void Open_underdoor(void);
 void Close_underdoor(void);
 #endif
