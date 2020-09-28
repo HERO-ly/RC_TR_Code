@@ -54,7 +54,7 @@ void RX_Analysis_Angle(u8 *msg,u32 StdId_Num)
 	moto_dir_ctl[StdId_Num-0x201].temtpratrue=msg[6];
 	last_angle_temp[StdId_Num-0x201]=moto_dir_ctl[StdId_Num-0x201].present_angle;
 	
-	if(StdId_Num==0x202) moto_dir_ctl_temp=moto_dir_ctl[StdId_Num-0x201];
+	if(StdId_Num==0x204) moto_dir_ctl_temp=moto_dir_ctl[StdId_Num-0x201];
 }
 
 void RX_Analysis_Speed(u8 *msg,u32 StdId_Num)
@@ -70,7 +70,7 @@ void RX_Analysis_Speed(u8 *msg,u32 StdId_Num)
 	moto_speed_ctl[StdId_Num-0x201].electric=msg[5];temp=msg[4];
 	moto_speed_ctl[StdId_Num-0x201].electric=moto_speed_ctl[StdId_Num-0x201].electric|(temp<<8);
 	moto_speed_ctl[StdId_Num-0x201].temtpratrue=msg[6];
-	if(StdId_Num==0x202) moto_speed_ctl_temp=moto_speed_ctl[StdId_Num-0x201];
+	if(StdId_Num==0x201) moto_speed_ctl_temp=moto_speed_ctl[StdId_Num-0x201];
 }
 
 

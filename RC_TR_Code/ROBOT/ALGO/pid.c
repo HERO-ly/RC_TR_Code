@@ -1,16 +1,17 @@
 #include "main.h"
 
+#define TEST_START_SPEED 1300
 PID pid_position[8];							//方向电机的PID参数
 PID pid_speed[4];								//动力电机的PID参数
 PID pid_kick[2];
 
 s32 TragetAngle[4]={0,0,0,0};					//目标角度初始化
-s32 TragetSpeed[4]={-1000,-1000,-1000,-1000};	//目标速度初始化
+s32 TragetSpeed[4]={-TEST_START_SPEED,-TEST_START_SPEED,-TEST_START_SPEED,-TEST_START_SPEED};	//目标速度初始化
 s32 temp_tar=0;
 s32 Target_kick=550000;
 extern s8 Tx_Msg_Speed[8];						//CAN1发送数据串
 extern s8 Tx_Msg_Angle[8];						//CAN2发送数据串
-u32 PID_OUTPUT_LIMIT=5000;						//PID的最大输出值
+u32 PID_OUTPUT_LIMIT=8000;						//PID的最大输出值
 
 extern motoinfo moto_dir_ctl[5];				//外部引用方向电机的电机数据
 extern motoinfo moto_speed_ctl[4];				//外部引用动力电机的电机数据
@@ -34,10 +35,10 @@ void Circle_Init(u8 Mode_Angle_Speed)
 	if (Mode_Angle_Speed==0x1)
 	{
 //方向电机速度环初始化	PID *pid_val				Kp		Ki			Kd			error_max		dead_line	intergral_max	output_max
-		PID_Init(			&pid_position[1],		15,		0.5,		0.5,		5000,			0,			5000,			PID_OUTPUT_LIMIT/2	);
-		PID_Init(			&pid_position[3],		25,		0.5,		0.5,		5000,			0,			5000,			PID_OUTPUT_LIMIT/3	);
+		PID_Init(			&pid_position[1],		25,		0.5,		0.5,		5000,			0,			5000,			PID_OUTPUT_LIMIT/2	);
+		PID_Init(			&pid_position[3],		25,		0.5,		0.5,		5000,			0,			5000,			PID_OUTPUT_LIMIT/2	);
 		PID_Init(			&pid_position[5],		25,		0.5,		0.5,		5000,			0,			5000,			PID_OUTPUT_LIMIT/2	);
-		PID_Init(			&pid_position[7],		25,		0.5,		0.5,		5000,			0,			5000,			PID_OUTPUT_LIMIT	);
+		PID_Init(			&pid_position[7],		25,		0.5,		0.5,		5000,			0,			5000,			PID_OUTPUT_LIMIT/2	);
 //	这边用到了1 3 5 7的结构体数组, 是因为0 2 4 6到时候会储存位置环的参数
 		
 //	速度电机速度环初始化	PID *pid_val			Kp		Ki			Kd			error_max		dead_line	intergral_max	output_max
@@ -50,14 +51,14 @@ void Circle_Init(u8 Mode_Angle_Speed)
 	else 
 	{
 //方向电机位置环初始化	PID *pid_val				Kp		Ki			Kd			error_max		dead_line	intergral_max	output_max
-		PID_Init(			&pid_position[0],		0.31,	0.05,		0,			5000,			0,			5000,			PID_OUTPUT_LIMIT	);
-		PID_Init(			&pid_position[1],		10,		0,			0,			5000,			0,			5000,			PID_OUTPUT_LIMIT	);
-		PID_Init(			&pid_position[2],		0.31,	0.05,		0,			5000,			0,			5000,			PID_OUTPUT_LIMIT	);
-		PID_Init(			&pid_position[3],		10,		0,			0,			5000,			0,			5000,			PID_OUTPUT_LIMIT	);
-		PID_Init(			&pid_position[4],		0.31,	0.05,		0,			5000,			0,			5000,			PID_OUTPUT_LIMIT	);
-		PID_Init(			&pid_position[5],		10,		0,			0,			5000,			0,			5000,			PID_OUTPUT_LIMIT	);
-		PID_Init(			&pid_position[6],		0.31,	0.05,		0,			5000,			0,			5000,			PID_OUTPUT_LIMIT	);
-		PID_Init(			&pid_position[7],		10,		0,			0,			5000,			0,			5000,			PID_OUTPUT_LIMIT	);
+		PID_Init(			&pid_position[0],		0.32,	0.04,		0,			5000,			0,			7000,			PID_OUTPUT_LIMIT	);
+		PID_Init(			&pid_position[1],		10,		0,			0,			5000,			0,			7000,			PID_OUTPUT_LIMIT	);
+		PID_Init(			&pid_position[2],		0.31,	0.03,		0,			5000,			0,			7000,			PID_OUTPUT_LIMIT	);
+		PID_Init(			&pid_position[3],		11,		0,			0,			5000,			0,			7000,			PID_OUTPUT_LIMIT	);
+		PID_Init(			&pid_position[4],		0.31,	0.05,		0,			5000,			0,			7000,			PID_OUTPUT_LIMIT	);
+		PID_Init(			&pid_position[5],		10,		0,			0,			5000,			0,			7000,			PID_OUTPUT_LIMIT	);
+		PID_Init(			&pid_position[6],		0.31,	0.04,		0,			5000,			0,			7000,			PID_OUTPUT_LIMIT	);
+		PID_Init(			&pid_position[7],		10,		0,			0,			5000,			0,			7000,			PID_OUTPUT_LIMIT	);
 //	0 2 4 6数组存位置环参数, 1 3 5 7数组存速度环参数
 		
 //	速度电机速度环初始化	PID *pid_val			Kp		Ki			Kd			error_max		dead_line	intergral_max	output_max
@@ -192,6 +193,7 @@ void SEND_PID()
 	PID_General_Cal(&pid_position[3],moto_dir_ctl[1].speed,pid_position[2].output,1,Tx_Msg_Angle);
 	PID_General_Cal(&pid_position[5],moto_dir_ctl[2].speed,pid_position[4].output,2,Tx_Msg_Angle);
 	PID_General_Cal(&pid_position[7],moto_dir_ctl[3].speed,pid_position[6].output,3,Tx_Msg_Angle);
+	temp_tar=TragetAngle[3];
 	CAN2_Send_Angle(Tx_Msg_Angle,8);
 //	发送CAN2信号
 	
@@ -200,7 +202,7 @@ void SEND_PID()
 	PID_General_Cal(&pid_speed[1],moto_speed_ctl[1].speed,TragetSpeed[1],1,Tx_Msg_Speed);
 	PID_General_Cal(&pid_speed[2],moto_speed_ctl[2].speed,TragetSpeed[2],2,Tx_Msg_Speed);
 	PID_General_Cal(&pid_speed[3],moto_speed_ctl[3].speed,TragetSpeed[3],3,Tx_Msg_Speed);
-	temp_tar=TragetSpeed[1];
+	
 	CAN1_Send_Speed(Tx_Msg_Speed,8);
 //	发送CAN1信号
 }
@@ -236,7 +238,7 @@ void Abs_Angle_Init()
 
 void Kick_Init(void)
 {
-		PID_Init(			&pid_kick[0],		0.21,		0.001,		0,			5000,			0,			5000,			PID_OUTPUT_LIMIT+3000	);
+		PID_Init(			&pid_kick[0],		0.21,		0.001,		0,			5000,			0,			5000,			PID_OUTPUT_LIMIT	);
 		PID_Init(			&pid_kick[1],		15,		0.1,			0,			6000,			0,			6000,			13000	);
 }
 

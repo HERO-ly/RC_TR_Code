@@ -18,6 +18,7 @@ void Move_Mode_Check()
 	
 	//TR_Control.TR_state这个才是对的
 	switch(TTEST)
+	//switch(TR_Control.TR_state)
 	{
 		case 0:														//"0"模式   等待上位机发送信号 
 		{
@@ -148,7 +149,7 @@ void Open_underdoor(void)
 
 void Close_underdoor(void)
 {
-	Door_PWM=1800;
+	Door_PWM=2100;
 	TIM_SetCompare1(TIM3,Door_PWM);
 }
 
