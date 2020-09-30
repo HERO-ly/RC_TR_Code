@@ -36,19 +36,19 @@ void Speed_analysis()
 	s32 Tar_Speed=0;
 	s32 Target_angle=0;
 	
-	if(TV_x==0&&TV_y==0&&TV_w==0)
-//	if(TR_Control.V_x==0&&TR_Control.V_y==0&&TR_Control.V_w==0)	
+//	if(TV_x==0&&TV_y==0&&TV_w==0)
+	if(TR_Control.V_x==0&&TR_Control.V_y==0&&TR_Control.V_w==0)	
 	{
 		StopMove();
 		return ;
-	}else if(TV_w)
-	// else if(TR_Control.V_w)
+	}//else if(TV_w)
+	 else if(TR_Control.V_w)
 	{
 		Target_angle=45*AngleProportion;
-		TragetSpeed[0]=TV_w;
-		TragetSpeed[1]=-TV_w;
-		TragetSpeed[2]=-TV_w;
-		TragetSpeed[3]=TV_w;
+		TragetSpeed[0]=TR_Control.V_w;
+		TragetSpeed[1]=-TR_Control.V_w;
+		TragetSpeed[2]=-TR_Control.V_w;
+		TragetSpeed[3]=TR_Control.V_w;
 		TragetAngle[0]=Origin_Angle[0]+Target_angle;
 		TragetAngle[1]=Origin_Angle[1]-Target_angle;
 		TragetAngle[2]=Origin_Angle[2]+Target_angle;

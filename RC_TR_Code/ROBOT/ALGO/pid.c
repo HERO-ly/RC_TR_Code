@@ -62,10 +62,10 @@ void Circle_Init(u8 Mode_Angle_Speed)
 //	0 2 4 6数组存位置环参数, 1 3 5 7数组存速度环参数
 		
 //	速度电机速度环初始化	PID *pid_val			Kp		Ki			Kd			error_max		dead_line	intergral_max	output_max
-		PID_Init(			&pid_speed[0],			15,		0.5,		0.5,		5500,			0,			5000,			PID_OUTPUT_LIMIT	);
-		PID_Init(			&pid_speed[1],			5,		0.15,		0,			5500,			0,			5000,			PID_OUTPUT_LIMIT	);
-		PID_Init(			&pid_speed[2],			15,		0.5,		0.5,		5500,			0,			5000,			PID_OUTPUT_LIMIT	);
-		PID_Init(			&pid_speed[3],			15,		0.5,		0.5,		5500,			0,			5000,			PID_OUTPUT_LIMIT	);
+		PID_Init(			&pid_speed[0],			15,		0.1,		0,			5500,			0,			5000,			PID_OUTPUT_LIMIT	);
+		PID_Init(			&pid_speed[1],			15,		0.15,		0,			5500,			0,			5000,			PID_OUTPUT_LIMIT	);
+		PID_Init(			&pid_speed[2],			15,		0.1,		0,			5500,			0,			5000,			PID_OUTPUT_LIMIT	);
+		PID_Init(			&pid_speed[3],			15,		0.1,		0,			5500,			0,			5000,			PID_OUTPUT_LIMIT	);
 		
 	}
 }

@@ -17,8 +17,8 @@ void Move_Mode_Check()
 	extern u16 Abs_Angle_Init_Count;
 	
 	//TR_Control.TR_state这个才是对的
-	switch(TTEST)
-	//switch(TR_Control.TR_state)
+//	switch(TTEST)
+	switch(TR_Control.TR_state)
 	{
 		case 0:														//"0"模式   等待上位机发送信号 
 		{

@@ -142,7 +142,7 @@ void USART3_IRQHandler(void)
 			DMA1_Stream1->NDTR=(uint16_t)RC_FRAME_LENGTH ;
 			DMA_DoubleBufferModeConfig(DMA1_Stream1,(uint32_t)&ni_rx_buffer[1][0],DMA_Memory_1);
 			DMA_Cmd(DMA1_Stream1,ENABLE);
-			Ni_analysis(ni_rx_buffer[0]);
+		//	Ni_analysis(ni_rx_buffer[0]);
 		}
 		else
 		{
@@ -150,7 +150,7 @@ void USART3_IRQHandler(void)
 			DMA1_Stream1->NDTR=(uint16_t)RC_FRAME_LENGTH ;
 			DMA_DoubleBufferModeConfig(DMA1_Stream1,(uint32_t)&ni_rx_buffer[0][0],DMA_Memory_0);
 			DMA_Cmd(DMA1_Stream1,ENABLE );
-			Ni_analysis(ni_rx_buffer[1]);
+		//	Ni_analysis(ni_rx_buffer[1]);
 		}
 	}
 }
