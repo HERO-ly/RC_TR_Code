@@ -51,13 +51,13 @@ void Circle_Init(u8 Mode_Angle_Speed)
 	else 
 	{
 //方向电机位置环初始化	PID *pid_val				Kp		Ki			Kd			error_max		dead_line	intergral_max	output_max
-		PID_Init(			&pid_position[0],		0.32,	0.04,		0,			5000,			0,			7000,			PID_OUTPUT_LIMIT	);
+		PID_Init(			&pid_position[0],		0.215,	0.015,		0.03,			20000,			5,			7000,			PID_OUTPUT_LIMIT	);
 		PID_Init(			&pid_position[1],		10,		0,			0,			5000,			0,			7000,			PID_OUTPUT_LIMIT	);
-		PID_Init(			&pid_position[2],		0.31,	0.03,		0,			5000,			0,			7000,			PID_OUTPUT_LIMIT	);
+		PID_Init(			&pid_position[2],		0.215,	0.015,		0.03,			20000,			5,			7000,			PID_OUTPUT_LIMIT	);
 		PID_Init(			&pid_position[3],		11,		0,			0,			5000,			0,			7000,			PID_OUTPUT_LIMIT	);
-		PID_Init(			&pid_position[4],		0.31,	0.05,		0,			5000,			0,			7000,			PID_OUTPUT_LIMIT	);
+		PID_Init(			&pid_position[4],		0.215,	0.015,		0.03,			20000,			5,			7000,			PID_OUTPUT_LIMIT	);
 		PID_Init(			&pid_position[5],		10,		0,			0,			5000,			0,			7000,			PID_OUTPUT_LIMIT	);
-		PID_Init(			&pid_position[6],		0.31,	0.04,		0,			5000,			0,			7000,			PID_OUTPUT_LIMIT	);
+		PID_Init(			&pid_position[6],		0.215,	0.015,		0.03,			20000,			5,			7000,			PID_OUTPUT_LIMIT	);
 		PID_Init(			&pid_position[7],		10,		0,			0,			5000,			0,			7000,			PID_OUTPUT_LIMIT	);
 //	0 2 4 6数组存位置环参数, 1 3 5 7数组存速度环参数
 		
@@ -114,8 +114,10 @@ void PID_General_Cal(PID *pid, float fdbV, float tarV,u8 moto_num,s8 *Tx_msg)
 		pid->error = pid->error_max;
 	if(pid->error < -pid->error_max)
 		pid->error = -pid->error_max;
-//	if(My_fabs(pid->error) < pid->dead_line)
-//		pid->error = 0;
+	if(pid->error > 0 && pid->error < pid->dead_line)
+		pid->error = 0;
+	if(pid->error < 0 && pid->error > pid->dead_line)
+		pid->error = 0;
 	
 	pid->intergral = pid->intergral + pid->error;
 	if(pid->intergral > pid->intergral_max)
@@ -238,7 +240,7 @@ void Abs_Angle_Init()
 
 void Kick_Init(void)
 {
-		PID_Init(			&pid_kick[0],		0.21,		0.001,		0,			5000,			0,			5000,			PID_OUTPUT_LIMIT	);
+		PID_Init(			&pid_kick[0],		0.21,		0.001,		0,			20000,			0,			7000,			9000	);
 		PID_Init(			&pid_kick[1],		15,		0.1,			0,			6000,			0,			6000,			13000	);
 }
 

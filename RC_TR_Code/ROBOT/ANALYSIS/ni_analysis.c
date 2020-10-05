@@ -39,15 +39,18 @@ void Speed_analysis()
 //	if(TV_x==0&&TV_y==0&&TV_w==0)
 	if(TR_Control.V_x==0&&TR_Control.V_y==0&&TR_Control.V_w==0)	
 	{
-		StopMove();
+		TragetSpeed[0]=0;
+		TragetSpeed[1]=0;
+		TragetSpeed[2]=0;
+		TragetSpeed[3]=0;
 		return ;
 	}//else if(TV_w)
 	 else if(TR_Control.V_w)
 	{
 		Target_angle=45*AngleProportion;
 		TragetSpeed[0]=TR_Control.V_w;
-		TragetSpeed[1]=-TR_Control.V_w;
-		TragetSpeed[2]=-TR_Control.V_w;
+		TragetSpeed[1]=TR_Control.V_w;
+		TragetSpeed[2]=TR_Control.V_w;
 		TragetSpeed[3]=TR_Control.V_w;
 		TragetAngle[0]=Origin_Angle[0]+Target_angle;
 		TragetAngle[1]=Origin_Angle[1]-Target_angle;
@@ -58,62 +61,45 @@ void Speed_analysis()
 	}
 	
 //	if(TV_y!=0&&TV_x==0)
-	if(TR_Control.V_y!=0&&TR_Control.V_x==0)
+	if(TR_Control.V_x!=0&&TR_Control.V_y==0)
 	{
-//		TragetSpeed[0]=TV_y;
-//		TragetSpeed[1]=-TV_y;
-//		TragetSpeed[2]=-TV_y;
-//		TragetSpeed[3]=TV_y;
-		
-		TragetSpeed[0]=TR_Control.V_y;
-		TragetSpeed[1]=-TR_Control.V_y;
-		TragetSpeed[2]=-TR_Control.V_y;
-		TragetSpeed[3]=TR_Control.V_y;
+		TragetSpeed[0]=TR_Control.V_x;
+		TragetSpeed[1]=-TR_Control.V_x;
+		TragetSpeed[2]=-TR_Control.V_x;
+		TragetSpeed[3]=TR_Control.V_x;
 		Target_angle=0;
 	}
 	
 //	if(TV_x!=0&&TV_y==0)
-	if(TR_Control.V_x!=0&&TR_Control.V_y==0)
+	if(TR_Control.V_y!=0&&TR_Control.V_x==0)
 	{
 		Target_angle=90*AngleProportion;
-//		if(TV_x>0)
-		if(TR_Control.V_x>0)
+		if(TR_Control.V_y>0)
 		{
-//			TragetSpeed[0]=TV_x;
-//			TragetSpeed[1]=-TV_x;
-//			TragetSpeed[2]=-TV_x;
-//			TragetSpeed[3]=TV_x;
-			
-			TragetSpeed[0]=TR_Control.V_x;
-			TragetSpeed[1]=-TR_Control.V_x;
-			TragetSpeed[2]=-TR_Control.V_x;
-			TragetSpeed[3]=TR_Control.V_x;
+			TragetSpeed[0]=TR_Control.V_y;
+			TragetSpeed[1]=-TR_Control.V_y;
+			TragetSpeed[2]=-TR_Control.V_y;
+			TragetSpeed[3]=TR_Control.V_y;
 		}else
 		{
 			Target_angle=-Target_angle;
-//			TragetSpeed[0]=-TV_x;
-//			TragetSpeed[1]=TV_x;
-//			TragetSpeed[2]=TV_x;
-//			TragetSpeed[3]=-TV_x;
-			
-			TragetSpeed[0]=-TR_Control.V_x;
-			TragetSpeed[1]=TR_Control.V_x;
-			TragetSpeed[2]=TR_Control.V_x;
-			TragetSpeed[3]=-TR_Control.V_x;
+			TragetSpeed[0]=-TR_Control.V_y;
+			TragetSpeed[1]=TR_Control.V_y;
+			TragetSpeed[2]=TR_Control.V_y;
+			TragetSpeed[3]=-TR_Control.V_y;
 		}
 	}
 	
-//	if(TV_x!=0&&TV_y!=0)
-	if(TR_Control.V_x!=0&&TR_Control.V_y!=0)
+	if(TR_Control.V_y!=0&&TR_Control.V_x!=0)
 	{
 //		Tar_Speed=sqrt(TV_x*TV_x+TV_y*TV_y);
-		Tar_Speed=sqrt(TR_Control.V_x*TR_Control.V_x+TR_Control.V_y*TR_Control.V_y);
+		Tar_Speed=sqrt(TR_Control.V_y*TR_Control.V_y+TR_Control.V_x*TR_Control.V_x);
 //		Target_angle=atan(1.0*TV_x/TV_y)*In_Angle*AngleProportion;
-		Target_angle=atan(1.0*TR_Control.V_x/TR_Control.V_y)*In_Angle*AngleProportion;
+		Target_angle=atan(1.0*TR_Control.V_y/TR_Control.V_x)*In_Angle*AngleProportion;
 		if(Target_angle>0)
 		{
 //			if(TV_x>0)
-			if(TR_Control.V_x>0)
+			if(TR_Control.V_y>0)
 			{
 				TragetSpeed[0]=Tar_Speed;
 				TragetSpeed[1]=-Tar_Speed;
@@ -129,7 +115,7 @@ void Speed_analysis()
 		}else
 		{
 //			if(TV_x>0)
-			if(TR_Control.V_x>0)
+			if(TR_Control.V_y>0)
 			{
 				TragetSpeed[0]=-Tar_Speed;
 				TragetSpeed[1]=Tar_Speed;

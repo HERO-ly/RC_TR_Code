@@ -99,7 +99,7 @@ void CAN1_RX0_IRQHandler(void)
 	if (StdId_Num >=0x201 && StdId_Num <= 0x204)
 	{
 		RX_Analysis_Speed(RxMessage.Data,StdId_Num);
-		//LostCountFeed(&Error_Check.count[StdId_Num-0x201+0x4]);	//检测是否CAN1掉线
+		LostCountFeed(&Error_Check.count[StdId_Num-0x201+0x5]);	//检测是否CAN1掉线
 	}
 	CAN_ClearITPendingBit(CAN1,CAN_IT_FMP0);					//清除中断标志位
 }

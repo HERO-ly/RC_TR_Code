@@ -168,9 +168,9 @@ void Led_State(void)
 		}
 		case NORMAL_STATE:                 //正常操作模式，可切换双模式，陀螺仪控制/电机位置控制，陀螺仪需多次采样再次标定，再切换到陀螺仪控制
 		{	
-			if(led_num<=200)
+			if(led_num%10==0)
 			{
-				LED_RED_OFF();             //绿灯慢闪
+				LED_RED_OFF();             //绿灯快闪
 				LED_GREEN_ON();
 			}
 			else 
@@ -182,7 +182,7 @@ void Led_State(void)
 		}
 		case PROTECT_STATE:                 
 		{
-			if(led_num<=500)
+			if(led_num%10==0)
 			{
 				LED_RED_OFF();              //红灯快闪
 				LED_GREEN_OFF();
@@ -196,9 +196,9 @@ void Led_State(void)
 		}
 		case LOST_CAN2_STATE:			    //红绿灯交替闪烁
 		{
-			if(led_num<=300)
+			if(led_num%10==0)
 			{
-				LED_RED_OFF();              //红绿灯600ms周期切换
+				LED_RED_OFF();
 				LED_GREEN_ON();
 			}
 			else 

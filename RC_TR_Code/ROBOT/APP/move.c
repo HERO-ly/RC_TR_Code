@@ -18,11 +18,11 @@ void Move_Mode_Check()
 	
 	//TR_Control.TR_state这个才是对的
 //	switch(TTEST)
+	if(TR_Control.TR_state!=1) StopMove();
 	switch(TR_Control.TR_state)
 	{
 		case 0:														//"0"模式   等待上位机发送信号 
 		{
-			StopMove();
 			Work_mode=0;
 			break;
 		}
@@ -96,7 +96,7 @@ void Check_ball()
 	}
 }
 u8 TAR_START=0;					//测试圈数
-s32 TAR_KICI_ANGLE=200000;
+s32 TAR_KICI_ANGLE=330000;
 u8 KICK_num=0;
 void Kick_UP(void)
 {
@@ -106,21 +106,10 @@ void Kick_UP(void)
 	{
 		moto_dir_ctl[4].abs_angle=0;
 		KICK_num=1;
+		TAR_KICI_ANGLE=330000;
 		Kick_Init();
 		TAR_START=0;
 	}
-//	if(num==1)
-//	{
-//		TTEST=1;
-//		num=0;
-//		return ;
-//	}
-//	if(moto_dir_ctl[4].abs_angle>=Temp_kick*0.9)
-//	{
-//		num--;
-//		Temp_kick-=moto_dir_ctl[4].abs_angle;
-//		moto_dir_ctl[4].abs_angle=0;
-//	}
 	PID_Kick_Send(TAR_KICI_ANGLE);
 }
 
@@ -131,13 +120,12 @@ void Kick_OUT(void)
 	
 	if(TAR_START)
 	{
-		TAR_KICI_ANGLE=560000;
+		TAR_KICI_ANGLE=550000;
 	}
-	if(moto_dir_ctl[4].abs_angle>=560000*0.95)
+	if(moto_dir_ctl[4].abs_angle>=TAR_KICI_ANGLE*0.99)
 	{
 		DIS_Kick_Init();
 		KICK_num=0;
-		TTEST=1;
 	}PID_Kick_Send(TAR_KICI_ANGLE);
 }
 

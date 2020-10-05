@@ -42,16 +42,12 @@ void Check_Task(void)
 	}
 	
 	if(Error_Check.statu[LOST_LEFT_FRONT_Speed]==1||Error_Check.statu[LOST_RIGHT_FRONT_Speed]==1||Error_Check.statu[LOST_RIGHT_BACK_Speed]==1||Error_Check.statu[LOST_LEFT_BACK_Speed]==1)
-	{//速度电机出现错误
+	{//CAN1出现错误
 			SetWorkState(LOST_CAN1_STATE);	
 	}
-	else if(Error_Check.statu[LOST_LEFT_FRONT_Angle]==1||Error_Check.statu[LOST_RIGHT_FRONT_Angle]==1||Error_Check.statu[LOST_RIGHT_BACK_Angle]==1||Error_Check.statu[LOST_LEFT_BACK_Angle]==1)
-	{//方向电机出现错误
+	else if(Error_Check.statu[LOST_LEFT_FRONT_Angle]==1||Error_Check.statu[LOST_RIGHT_FRONT_Angle]==1||Error_Check.statu[LOST_RIGHT_BACK_Angle]==1||Error_Check.statu[LOST_LEFT_BACK_Angle]==1||Error_Check.statu[LOST_KICK]==1)
+	{//CAN2出现错误
 			SetWorkState(LOST_CAN2_STATE);	
-	}
-	else if(Error_Check.statu[LOST_KICK]==1)
-	{//踢球电机出现错误
-			SetWorkState(LOST_CAN2_STATE);				//由于踢球电机CAN未定, 所以待修改
 	}
 	else if(Error_Check.statu[LOST_TRANSMISSION]==1)
 	{//主副板 通信失败 
