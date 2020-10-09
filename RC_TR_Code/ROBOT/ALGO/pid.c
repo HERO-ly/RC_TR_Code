@@ -13,6 +13,7 @@ extern s8 Tx_Msg_Speed[8];						//CAN1发送数据串
 extern s8 Tx_Msg_Angle[8];						//CAN2发送数据串
 u32 PID_OUTPUT_LIMIT=8000;						//PID的最大输出值
 
+extern TR_Control_t TR_Control;
 extern motoinfo moto_dir_ctl[5];				//外部引用方向电机的电机数据
 extern motoinfo moto_speed_ctl[4];				//外部引用动力电机的电机数据
 extern s32 Origin_Angle[4];						//外部引用方向电机标定后的初始位置
@@ -51,13 +52,13 @@ void Circle_Init(u8 Mode_Angle_Speed)
 	else 
 	{
 //方向电机位置环初始化	PID *pid_val				Kp		Ki			Kd			error_max		dead_line	intergral_max	output_max
-		PID_Init(			&pid_position[0],		0.215,	0.015,		0.03,			20000,			5,			7000,			PID_OUTPUT_LIMIT	);
+		PID_Init(			&pid_position[0],		0.215,	0.015,		0.03,			20000,			15,			7000,			PID_OUTPUT_LIMIT	);
 		PID_Init(			&pid_position[1],		10,		0,			0,			5000,			0,			7000,			PID_OUTPUT_LIMIT	);
-		PID_Init(			&pid_position[2],		0.215,	0.015,		0.03,			20000,			5,			7000,			PID_OUTPUT_LIMIT	);
+		PID_Init(			&pid_position[2],		0.215,	0.015,		0.03,			20000,			15,			7000,			PID_OUTPUT_LIMIT	);
 		PID_Init(			&pid_position[3],		11,		0,			0,			5000,			0,			7000,			PID_OUTPUT_LIMIT	);
-		PID_Init(			&pid_position[4],		0.215,	0.015,		0.03,			20000,			5,			7000,			PID_OUTPUT_LIMIT	);
+		PID_Init(			&pid_position[4],		0.215,	0.015,		0.03,			20000,			15,			7000,			PID_OUTPUT_LIMIT	);
 		PID_Init(			&pid_position[5],		10,		0,			0,			5000,			0,			7000,			PID_OUTPUT_LIMIT	);
-		PID_Init(			&pid_position[6],		0.215,	0.015,		0.03,			20000,			5,			7000,			PID_OUTPUT_LIMIT	);
+		PID_Init(			&pid_position[6],		0.215,	0.015,		0.03,			20000,			15,			7000,			PID_OUTPUT_LIMIT	);
 		PID_Init(			&pid_position[7],		10,		0,			0,			5000,			0,			7000,			PID_OUTPUT_LIMIT	);
 //	0 2 4 6数组存位置环参数, 1 3 5 7数组存速度环参数
 		
@@ -183,7 +184,8 @@ void PID_IMU(PID *pid, float fdbV, float tarV)
 --------------------*/
 void SEND_PID()
 {
-	
+	extern s32 TAR_KICI_ANGLE;
+	s8 Tx_Msg_Angle_kick[8]={0,0,0,0,0,0,0,0};
 //	位置环计算
 	PID_General_Cal(&pid_position[0],moto_dir_ctl[0].abs_angle,TragetAngle[0],0,Tx_Msg_Angle);
 	PID_General_Cal(&pid_position[2],moto_dir_ctl[1].abs_angle,TragetAngle[1],1,Tx_Msg_Angle);
@@ -207,6 +209,18 @@ void SEND_PID()
 	
 	CAN1_Send_Speed(Tx_Msg_Speed,8);
 //	发送CAN1信号
+	
+	if(TR_Control.TR_state!=5&&TR_Control.TR_state!=6)
+	{
+		Tx_Msg_Angle_kick[0]=0;
+		Tx_Msg_Angle_kick[1]=0;
+	}
+	else
+	{
+		PID_General_Cal(&pid_kick[0],moto_dir_ctl[4].abs_angle,TAR_KICI_ANGLE,0,Tx_Msg_Angle_kick);
+		PID_General_Cal(&pid_kick[1],moto_dir_ctl[4].speed,pid_kick[0].output,0,Tx_Msg_Angle_kick);
+	}
+	CAN2_Send_Angle_Kick(Tx_Msg_Angle_kick,8);
 }
 
 /*--------------------

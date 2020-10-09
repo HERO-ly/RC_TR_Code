@@ -24,7 +24,7 @@ void USART3_DMA_Config(uint32_t baudrate)
 	GPIO_InitStructure.GPIO_Pin = GPIO_Pin_11|GPIO_Pin_10 ;
 	GPIO_InitStructure.GPIO_Mode = GPIO_Mode_AF;
 	GPIO_InitStructure.GPIO_PuPd = GPIO_PuPd_UP;
-	GPIO_InitStructure.GPIO_Speed = GPIO_Speed_50MHz;
+	GPIO_InitStructure.GPIO_Speed = GPIO_Speed_100MHz;
 	GPIO_InitStructure.GPIO_OType = GPIO_OType_PP;
 	GPIO_Init(GPIOC, &GPIO_InitStructure);
 	
@@ -105,8 +105,8 @@ void USART3_DMA_Config(uint32_t baudrate)
 	//DMAÖÐ¶Ï
 //	nvic.NVIC_IRQChannel = DMA2_Stream2_IRQn;
 	nvic.NVIC_IRQChannel = DMA1_Stream3_IRQn;
-	nvic.NVIC_IRQChannelPreemptionPriority = 1;
-	nvic.NVIC_IRQChannelSubPriority = 0;
+	nvic.NVIC_IRQChannelPreemptionPriority = 0;
+	nvic.NVIC_IRQChannelSubPriority = 1;
 	nvic.NVIC_IRQChannelCmd = ENABLE;
 	NVIC_Init(&nvic);
 }
@@ -121,9 +121,12 @@ void DMA1_Stream3_IRQHandler(void)
 		
 	}
 }
-
+u32 DMA_time=0;
+u32 last_time=0;
 void USART3_IRQHandler(void)
 {
+	extern u32 time;
+	
 	if(USART_GetITStatus(USART3, USART_IT_TC) != RESET)
 	{
 		USART_ITConfig(USART3,USART_IT_TC,DISABLE);
@@ -136,6 +139,9 @@ void USART3_IRQHandler(void)
 		(void)USART3->SR;
 		(void)USART3->DR;
 		
+		
+		DMA_time=time-last_time;
+		last_time=time;
 		if(DMA_GetCurrentMemoryTarget(DMA1_Stream1)==0)
 		{
 			DMA_Cmd(DMA1_Stream1,DISABLE);

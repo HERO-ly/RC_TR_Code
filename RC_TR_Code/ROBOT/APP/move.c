@@ -15,7 +15,7 @@ void Move_Mode_Check()
 	extern u8 Abs_Angle_State;
 	extern u16 Moto_TouchDown[4];
 	extern u16 Abs_Angle_Init_Count;
-	
+//	if(TR_Control.TR_state!=5&&TR_Control.TR_state!=6)DIS_Kick_Init();
 	//TR_Control.TR_state这个才是对的
 //	switch(TTEST)
 	if(TR_Control.TR_state!=1) StopMove();
@@ -107,10 +107,11 @@ void Kick_UP(void)
 		moto_dir_ctl[4].abs_angle=0;
 		KICK_num=1;
 		TAR_KICI_ANGLE=330000;
+		DIS_Kick_Init();
 		Kick_Init();
 		TAR_START=0;
 	}
-	PID_Kick_Send(TAR_KICI_ANGLE);
+	//PID_Kick_Send(TAR_KICI_ANGLE);
 }
 
 void Kick_OUT(void)
@@ -120,13 +121,13 @@ void Kick_OUT(void)
 	
 	if(TAR_START)
 	{
-		TAR_KICI_ANGLE=550000;
+		TAR_KICI_ANGLE=560000;
 	}
 	if(moto_dir_ctl[4].abs_angle>=TAR_KICI_ANGLE*0.99)
 	{
-		DIS_Kick_Init();
+	//	DIS_Kick_Init();
 		KICK_num=0;
-	}PID_Kick_Send(TAR_KICI_ANGLE);
+	}//PID_Kick_Send(TAR_KICI_ANGLE);
 }
 
 void Open_underdoor(void)
@@ -143,7 +144,7 @@ void Close_underdoor(void)
 
 void Limit_Speed_Angle()				//测试保护代码
 {
-	s32 SpeedLimit=7000;
+	s32 SpeedLimit=3000;
 //	s32 AngleLimit=115000;
 	u8 TragrtMoto_Num=0;
 	
