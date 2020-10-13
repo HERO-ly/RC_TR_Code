@@ -18,6 +18,7 @@ void BSP_Init()
 	CAN2_Init(CAN_SJW_1tq,CAN_BS2_6tq,CAN_BS1_7tq,3,CAN_Mode_Normal);	//CAN2初始化
 	TIM3_CAN_SEND_Init(10000-1,84-1);									//1毫秒定时器
 	Kick_Init();
+	Close_underdoor();
 }
 
 
