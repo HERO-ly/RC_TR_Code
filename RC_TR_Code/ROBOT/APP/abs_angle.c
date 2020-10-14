@@ -62,6 +62,7 @@ void Angle_Init()
 					//AngleProportion=(Origin_Angle[0]+Origin_Angle[1]+Origin_Angle[2]+Origin_Angle[3])/4/150;
 					//AngleProportion 通过标定计算出4个轮子的偏转角度为多大, 然后绝对值相加除以电机总数, 再除以转动角度
 					Circle_Init(Speed_Mode);						//初始化位置环和速度环
+					Kick_Init();
 					Angle_Init_flag=2;								//表示标定过程结束, 可以进入状态机环节
 					USART3_DMA_Config(115200);;						//初始化串口, 可以和上位机通信
 					StopMove();										//把目标速度方向设为原地待定的初始值

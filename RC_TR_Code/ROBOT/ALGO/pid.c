@@ -35,10 +35,10 @@ void Circle_Init(u8 Mode_Angle_Speed)
 	if (Mode_Angle_Speed==0x1)
 	{
 //方向电机速度环初始化	PID *pid_val				Kp		Ki			Kd			error_max		dead_line	intergral_max	output_max
-		PID_Init(			&pid_position[1],		25,		0.5,		0.5,		5000,			0,			5000,			PID_OUTPUT_LIMIT/2	);
-		PID_Init(			&pid_position[3],		25,		0.5,		0.5,		5000,			0,			5000,			PID_OUTPUT_LIMIT/2	);
-		PID_Init(			&pid_position[5],		25,		0.5,		0.5,		5000,			0,			5000,			PID_OUTPUT_LIMIT/2	);
-		PID_Init(			&pid_position[7],		25,		0.5,		0.5,		5000,			0,			5000,			PID_OUTPUT_LIMIT/2	);
+		PID_Init(			&pid_position[1],		25,		0,		0,		5000,			0,			5000,			PID_OUTPUT_LIMIT/2	);
+		PID_Init(			&pid_position[3],		25,		0,		0,		5000,			0,			5000,			PID_OUTPUT_LIMIT/2	);
+		PID_Init(			&pid_position[5],		25,		0,		0,		5000,			0,			5000,			PID_OUTPUT_LIMIT/2	);
+		PID_Init(			&pid_position[7],		25,		0,		0,		5000,			0,			5000,			PID_OUTPUT_LIMIT/2	);
 //	这边用到了1 3 5 7的结构体数组, 是因为0 2 4 6到时候会储存位置环的参数
 		
 //	速度电机速度环初始化	PID *pid_val			Kp		Ki			Kd			error_max		dead_line	intergral_max	output_max
@@ -51,13 +51,13 @@ void Circle_Init(u8 Mode_Angle_Speed)
 	else 
 	{
 //方向电机位置环初始化	PID *pid_val				Kp		Ki			Kd			error_max		dead_line	intergral_max	output_max
-		PID_Init(			&pid_position[0],		0.215,	0.015,		0.03,			20000,			5,			7000,			PID_OUTPUT_LIMIT	);
+		PID_Init(			&pid_position[0],		0.215,	0,		0,			20000,			5,			7000,			PID_OUTPUT_LIMIT	);
 		PID_Init(			&pid_position[1],		10,		0,			0,			5000,			0,			7000,			PID_OUTPUT_LIMIT	);
-		PID_Init(			&pid_position[2],		0.215,	0.015,		0.03,			20000,			5,			7000,			PID_OUTPUT_LIMIT	);
+		PID_Init(			&pid_position[2],		0.215,	0,		0,			20000,			5,			7000,			PID_OUTPUT_LIMIT	);
 		PID_Init(			&pid_position[3],		11,		0,			0,			5000,			0,			7000,			PID_OUTPUT_LIMIT	);
-		PID_Init(			&pid_position[4],		0.215,	0.015,		0.03,			20000,			5,			7000,			PID_OUTPUT_LIMIT	);
+		PID_Init(			&pid_position[4],		0.215,	0,		0,			20000,			5,			7000,			PID_OUTPUT_LIMIT	);
 		PID_Init(			&pid_position[5],		10,		0,			0,			5000,			0,			7000,			PID_OUTPUT_LIMIT	);
-		PID_Init(			&pid_position[6],		0.215,	0.015,		0.03,			20000,			5,			7000,			PID_OUTPUT_LIMIT	);
+		PID_Init(			&pid_position[6],		0.15,	0,		0,			20000,			5,			7000,			PID_OUTPUT_LIMIT	);
 		PID_Init(			&pid_position[7],		10,		0,			0,			5000,			0,			7000,			PID_OUTPUT_LIMIT	);
 //	0 2 4 6数组存位置环参数, 1 3 5 7数组存速度环参数
 		
@@ -110,6 +110,7 @@ void PID_General_Cal(PID *pid, float fdbV, float tarV,u8 moto_num,s8 *Tx_msg)
 {
 
 	pid->error =  tarV - fdbV;
+	pid->error*=2;
 	if(pid->error > pid->error_max)
 		pid->error = pid->error_max;
 	if(pid->error < -pid->error_max)
@@ -183,7 +184,9 @@ void PID_IMU(PID *pid, float fdbV, float tarV)
 --------------------*/
 void SEND_PID()
 {
-	
+	extern TR_Control_t TR_Control;
+	extern s32 TAR_KICI_ANGLE;
+	s8 Tx_Msg_Angle_kick[8]={0,0,0,0,0,0,0,0};
 //	位置环计算
 	PID_General_Cal(&pid_position[0],moto_dir_ctl[0].abs_angle,TragetAngle[0],0,Tx_Msg_Angle);
 	PID_General_Cal(&pid_position[2],moto_dir_ctl[1].abs_angle,TragetAngle[1],1,Tx_Msg_Angle);
@@ -207,6 +210,13 @@ void SEND_PID()
 	
 	CAN1_Send_Speed(Tx_Msg_Speed,8);
 //	发送CAN1信号
+	
+	if(TR_Control.TR_state==5||TR_Control.TR_state==6)
+	{
+		PID_General_Cal(&pid_kick[0],moto_dir_ctl[4].abs_angle,TAR_KICI_ANGLE,0,Tx_Msg_Angle_kick);
+		PID_General_Cal(&pid_kick[1],moto_dir_ctl[4].speed,pid_kick[0].output,0,Tx_Msg_Angle_kick);
+	}
+	CAN2_Send_Angle_Kick(Tx_Msg_Angle_kick,8);
 }
 
 /*--------------------

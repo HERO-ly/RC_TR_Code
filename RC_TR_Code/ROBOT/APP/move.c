@@ -95,49 +95,40 @@ void Check_ball()
 		Mode2_state=1;
 	}
 }
-u8 TAR_START=0;					//²âÊÔÈ¦Êý
-s32 TAR_KICI_ANGLE=330000;
-u8 KICK_num=0;
+u8 TAR_START=0;
+s32 TAR_KICI_ANGLE=0;
 void Kick_UP(void)
 {
 	extern motoinfo moto_dir_ctl[5];
 	
-	if(KICK_num==0)
+	if(TAR_START==0)
 	{
 		moto_dir_ctl[4].abs_angle=0;
-		KICK_num=1;
+		TAR_START=1;
 		TAR_KICI_ANGLE=330000;
-		Kick_Init();
-		TAR_START=0;
 	}
-	PID_Kick_Send(TAR_KICI_ANGLE);
 }
 
 void Kick_OUT(void)
 {
 	extern motoinfo moto_dir_ctl[5];
-	TAR_START=1;
 	
-	if(TAR_START)
-	{
-		TAR_KICI_ANGLE=550000;
-	}
+	TAR_KICI_ANGLE=550000;
 	if(moto_dir_ctl[4].abs_angle>=TAR_KICI_ANGLE*0.99)
 	{
-		DIS_Kick_Init();
-		KICK_num=0;
-	}PID_Kick_Send(TAR_KICI_ANGLE);
+		TAR_START=0;
+	}
 }
 
 void Open_underdoor(void)
 {
-	Door_PWM=500;
+	Door_PWM=5;
 	TIM_SetCompare1(TIM3,Door_PWM);
 }
 
 void Close_underdoor(void)
 {
-	Door_PWM=2100;
+	Door_PWM=21;
 	TIM_SetCompare1(TIM3,Door_PWM);
 }
 
