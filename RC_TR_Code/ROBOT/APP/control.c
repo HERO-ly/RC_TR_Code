@@ -32,7 +32,7 @@ void control_task()
 	static u8 time=0;//系统总时间1ms一次
 	time_1ms_count++; 
 	time++;
-//	Check_Task();                             //保护检测
+	Check_Task();                             //保护检测
 	Work_Execute();	                          //错误保护，工作状态自动执行
 	Led_State();                              //led模式切换
 	

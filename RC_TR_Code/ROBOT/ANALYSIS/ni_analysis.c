@@ -19,7 +19,7 @@ void Ni_analysis(uint8_t *ni_rx_buffer)
 		TR_Control.V_y=(ni_rx_buffer[i+5]<<8)|ni_rx_buffer[i+6];
 		TR_Control.V_w=(ni_rx_buffer[i+7]<<8)|ni_rx_buffer[i+8];
 		i+=12;
-		//LostCountFeed(&Error_Check.count[7]);	//上位机下位机通信检测
+		LostCountFeed(&Error_Check.count[9]);	//上位机下位机通信检测
 	}
 	else
 		i+=12;
@@ -33,110 +33,125 @@ void Speed_analysis()
 	extern s32 TragetSpeed[4];	//目标速度.来源 pid.c
 	extern s32 TragetAngle[4];	//目标角度.来源 pid.c
 	extern u32 AngleProportion;
-	s32 Tar_Speed=0;
-	s32 Target_angle=0;
+//	s32 Tar_Speed=0;
+//	s32 Target_angle=0;
 	
 //	if(TV_x==0&&TV_y==0&&TV_w==0)
-	if(TR_Control.V_x==0&&TR_Control.V_y==0&&TR_Control.V_w==0)	
+//	if(TR_Control.V_x==0&&TR_Control.V_y==0)	
+	if(TR_Control.V_y==0)
 	{
 		TragetSpeed[0]=0;
 		TragetSpeed[1]=0;
 		TragetSpeed[2]=0;
 		TragetSpeed[3]=0;
-		return ;
-	}//else if(TV_w)
-	 else if(TR_Control.V_w)
-	{
-		Target_angle=45*AngleProportion;
-		TragetSpeed[0]=TR_Control.V_w;
-		TragetSpeed[1]=TR_Control.V_w;
-		TragetSpeed[2]=TR_Control.V_w;
-		TragetSpeed[3]=TR_Control.V_w;
-		TragetAngle[0]=Origin_Angle[0]+Target_angle;
-		TragetAngle[1]=Origin_Angle[1]-Target_angle;
-		TragetAngle[2]=Origin_Angle[2]+Target_angle;
-		TragetAngle[3]=Origin_Angle[3]-Target_angle;
-		Limit_Speed_Angle();
-		return ;
 	}
+	else
+	{
+			TragetSpeed[0]=TR_Control.V_y;
+			TragetSpeed[1]=TR_Control.V_y;
+			TragetSpeed[2]=-TR_Control.V_y;
+			TragetSpeed[3]=-TR_Control.V_y;
+	}
+	if(TR_Control.V_w!=0)
+	{
+			TragetSpeed[0]-=2*TR_Control.V_w;
+			TragetSpeed[1]-=2*TR_Control.V_w;
+			TragetSpeed[2]-=2*TR_Control.V_w;
+			TragetSpeed[3]-=2*TR_Control.V_w;
+	}
+	//else if(TV_w)
+//	 else if(TR_Control.V_w)
+//	{
+//		Target_angle=45*AngleProportion;
+//		TragetSpeed[0]=TR_Control.V_w;
+//		TragetSpeed[1]=TR_Control.V_w;
+//		TragetSpeed[2]=TR_Control.V_w;
+//		TragetSpeed[3]=TR_Control.V_w;
+//		TragetAngle[0]=Origin_Angle[0]+Target_angle;
+//		TragetAngle[1]=Origin_Angle[1]-Target_angle;
+//		TragetAngle[2]=Origin_Angle[2]+Target_angle;
+//		TragetAngle[3]=Origin_Angle[3]-Target_angle;
+//		Limit_Speed_Angle();
+//		return ;
+//	}
 	
 //	if(TV_y!=0&&TV_x==0)
-	if(TR_Control.V_x!=0&&TR_Control.V_y==0)
-	{
-		TragetSpeed[0]=TR_Control.V_x;
-		TragetSpeed[1]=-TR_Control.V_x;
-		TragetSpeed[2]=-TR_Control.V_x;
-		TragetSpeed[3]=TR_Control.V_x;
-		Target_angle=0;
-	}
+//	if(TR_Control.V_x!=0&&TR_Control.V_y==0)
+//	{
+//		TragetSpeed[0]=TR_Control.V_x;
+//		TragetSpeed[1]=-TR_Control.V_x;
+//		TragetSpeed[2]=-TR_Control.V_x;
+//		TragetSpeed[3]=TR_Control.V_x;
+//		Target_angle=0;
+//	}
 	
 //	if(TV_x!=0&&TV_y==0)
-	if(TR_Control.V_y!=0&&TR_Control.V_x==0)
-	{
-		Target_angle=90*AngleProportion;
-		if(TR_Control.V_y>0)
-		{
-			TragetSpeed[0]=TR_Control.V_y;
-			TragetSpeed[1]=-TR_Control.V_y;
-			TragetSpeed[2]=-TR_Control.V_y;
-			TragetSpeed[3]=TR_Control.V_y;
-		}else
-		{
-			Target_angle=-Target_angle;
-			TragetSpeed[0]=-TR_Control.V_y;
-			TragetSpeed[1]=TR_Control.V_y;
-			TragetSpeed[2]=TR_Control.V_y;
-			TragetSpeed[3]=-TR_Control.V_y;
-		}
-	}
-	
-	if(TR_Control.V_y!=0&&TR_Control.V_x!=0)
-	{
-//		Tar_Speed=sqrt(TV_x*TV_x+TV_y*TV_y);
-		Tar_Speed=sqrt(TR_Control.V_y*TR_Control.V_y+TR_Control.V_x*TR_Control.V_x);
-//		Target_angle=atan(1.0*TV_x/TV_y)*In_Angle*AngleProportion;
-		Target_angle=atan(1.0*TR_Control.V_y/TR_Control.V_x)*In_Angle*AngleProportion;
-		if(Target_angle>0)
-		{
-//			if(TV_x>0)
-			if(TR_Control.V_y>0)
-			{
-				TragetSpeed[0]=Tar_Speed;
-				TragetSpeed[1]=-Tar_Speed;
-				TragetSpeed[2]=-Tar_Speed;
-				TragetSpeed[3]=Tar_Speed;
-			}else
-			{
-				TragetSpeed[0]=-Tar_Speed;
-				TragetSpeed[1]=Tar_Speed;
-				TragetSpeed[2]=Tar_Speed;
-				TragetSpeed[3]=-Tar_Speed;
-			}
-		}else
-		{
-//			if(TV_x>0)
-			if(TR_Control.V_y>0)
-			{
-				TragetSpeed[0]=-Tar_Speed;
-				TragetSpeed[1]=Tar_Speed;
-				TragetSpeed[2]=Tar_Speed;
-				TragetSpeed[3]=-Tar_Speed;
-			}else
-			{
-				TragetSpeed[0]=Tar_Speed;
-				TragetSpeed[1]=-Tar_Speed;
-				TragetSpeed[2]=-Tar_Speed;
-				TragetSpeed[3]=Tar_Speed;
-			}
-		}
-	}
-//	TragetSpeed[i]=sqrt(TR_Control.V_x*TR_Control.V_x+TR_Control.V_y*TR_Control.V_y);	//暂定为每个轮子的速度大小方向一样, 计算xy矢量和
-//	Target_angle=atan(1.0*TR_Control.V_x/TR_Control.V_y)*In_Angle*AngleProportion;			//计算需要转向的角度
+//	if(TR_Control.V_y!=0&&TR_Control.V_x==0)
+//	{
+//		Target_angle=90*AngleProportion;
+//		if(TR_Control.V_y>0)
+//		{
+//			TragetSpeed[0]=TR_Control.V_y;
+//			TragetSpeed[1]=-TR_Control.V_y;
+//			TragetSpeed[2]=-TR_Control.V_y;
+//			TragetSpeed[3]=TR_Control.V_y;
+//		}else
+//		{
+//			Target_angle=-Target_angle;
+//			TragetSpeed[0]=-TR_Control.V_y;
+//			TragetSpeed[1]=TR_Control.V_y;
+//			TragetSpeed[2]=TR_Control.V_y;
+//			TragetSpeed[3]=-TR_Control.V_y;
+//		}
+//	}
+//	
+//	if(TR_Control.V_y!=0&&TR_Control.V_x!=0)
+//	{
+////		Tar_Speed=sqrt(TV_x*TV_x+TV_y*TV_y);
+//		Tar_Speed=sqrt(TR_Control.V_y*TR_Control.V_y+TR_Control.V_x*TR_Control.V_x);
+////		Target_angle=atan(1.0*TV_x/TV_y)*In_Angle*AngleProportion;
+//		Target_angle=atan(1.0*TR_Control.V_y/TR_Control.V_x)*In_Angle*AngleProportion;
+//		if(Target_angle>0)
+//		{
+////			if(TV_x>0)
+//			if(TR_Control.V_y>0)
+//			{
+//				TragetSpeed[0]=Tar_Speed;
+//				TragetSpeed[1]=-Tar_Speed;
+//				TragetSpeed[2]=-Tar_Speed;
+//				TragetSpeed[3]=Tar_Speed;
+//			}else
+//			{
+//				TragetSpeed[0]=-Tar_Speed;
+//				TragetSpeed[1]=Tar_Speed;
+//				TragetSpeed[2]=Tar_Speed;
+//				TragetSpeed[3]=-Tar_Speed;
+//			}
+//		}else
+//		{
+////			if(TV_x>0)
+//			if(TR_Control.V_y>0)
+//			{
+//				TragetSpeed[0]=-Tar_Speed;
+//				TragetSpeed[1]=Tar_Speed;
+//				TragetSpeed[2]=Tar_Speed;
+//				TragetSpeed[3]=-Tar_Speed;
+//			}else
+//			{
+//				TragetSpeed[0]=Tar_Speed;
+//				TragetSpeed[1]=-Tar_Speed;
+//				TragetSpeed[2]=-Tar_Speed;
+//				TragetSpeed[3]=Tar_Speed;
+//			}
+//		}
+//	}
+////	TragetSpeed[i]=sqrt(TR_Control.V_x*TR_Control.V_x+TR_Control.V_y*TR_Control.V_y);	//暂定为每个轮子的速度大小方向一样, 计算xy矢量和
+////	Target_angle=atan(1.0*TR_Control.V_x/TR_Control.V_y)*In_Angle*AngleProportion;			//计算需要转向的角度
 
-	TragetAngle[0]=Origin_Angle[0]+Target_angle;
-	TragetAngle[1]=Origin_Angle[1]+Target_angle;
-	TragetAngle[2]=Origin_Angle[2]+Target_angle;
-	TragetAngle[3]=Origin_Angle[3]+Target_angle;
+//	TragetAngle[0]=Origin_Angle[0]+Target_angle;
+//	TragetAngle[1]=Origin_Angle[1]+Target_angle;
+//	TragetAngle[2]=Origin_Angle[2]+Target_angle;
+//	TragetAngle[3]=Origin_Angle[3]+Target_angle;
 	Limit_Speed_Angle();
 }
 

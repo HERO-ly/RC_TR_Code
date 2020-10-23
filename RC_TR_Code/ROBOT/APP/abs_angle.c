@@ -42,8 +42,8 @@ void Angle_Init()
 			}
 	}else if(Angle_Init_flag==1)									//判断标定过程是否进入第二阶段
 	{
-		if (Moto_TouchDown[0]>=5&&Moto_TouchDown[1]>=5&&			//同上
-			Moto_TouchDown[2]>=5&&Moto_TouchDown[3]>=5)
+		if (Moto_TouchDown[0]>=10&&Moto_TouchDown[1]>=10&&			//同上
+			Moto_TouchDown[2]>=10&&Moto_TouchDown[3]>=10)
 			{
 				Abs_Angle_Init_Count++;
 				if (Abs_Angle_Init_Count==10)

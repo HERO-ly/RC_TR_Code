@@ -98,7 +98,7 @@ void CAN2_RX0_IRQHandler(void)
 	StdId_Num=RxMessage.StdId;
 	CAN_Receive(CAN2,CAN_FIFO0, &RxMessage);				//从邮箱读取数据
 	StdId_Num=RxMessage.StdId;
-	if (StdId_Num >=0x201 && StdId_Num <= 0x205)
+	if (StdId_Num >=0x201 && StdId_Num <= 0x204)
 	{
 		RX_Analysis_Angle(RxMessage.Data,StdId_Num);
 		LostCountFeed(&Error_Check.count[StdId_Num-0x201]);	//检测是否CAN2掉线
@@ -148,9 +148,9 @@ void CAN2_Send_Angle_Kick(s8* msg,u8 len)
 	
 	for(i=0;i<len;i++)
 	TxMessage.Data[i]=msg[i];		// 第一帧信息          
-	mbox= CAN_Transmit(CAN2, &TxMessage);   
+	mbox= CAN_Transmit(CAN1, &TxMessage);   
 	i=0;
-	while((CAN_TransmitStatus(CAN2, mbox)==CAN_TxStatus_Failed)&&(i<0XFFF))i++;	//等待发送结束
+	while((CAN_TransmitStatus(CAN1, mbox)==CAN_TxStatus_Failed)&&(i<0XFFF))i++;	//等待发送结束
 }
 
 

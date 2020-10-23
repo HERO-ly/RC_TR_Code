@@ -59,6 +59,44 @@ void TIM3_CAN_SEND_Init(u32 arr,u32 psc)
 	
 }
 
+
+
+void TIM2_PWM_Init(u32 arr,u32 psc)
+{
+	TIM_TimeBaseInitTypeDef TIM_TimeBaseInitStructure;
+	GPIO_InitTypeDef GPIO_InitTypeStructre;
+	TIM_OCInitTypeDef  TIM_OCInitStructure;
+	
+	RCC_APB1PeriphClockCmd(RCC_APB1Periph_TIM2,ENABLE);					//时钟使能
+	RCC_AHB1PeriphClockCmd(RCC_AHB1Periph_GPIOA,ENABLE);					//时钟使能
+	
+	GPIO_InitTypeStructre.GPIO_Mode=GPIO_Mode_AF;
+	GPIO_InitTypeStructre.GPIO_OType=GPIO_OType_PP;
+	GPIO_InitTypeStructre.GPIO_Pin=GPIO_Pin_0;
+	GPIO_InitTypeStructre.GPIO_PuPd=GPIO_PuPd_UP;
+	GPIO_InitTypeStructre.GPIO_Speed=GPIO_High_Speed;
+	GPIO_Init(GPIOA,&GPIO_InitTypeStructre);
+	
+	GPIO_PinAFConfig(GPIOA,GPIO_PinSource0,GPIO_AF_TIM2);
+	
+	TIM_TimeBaseInitStructure.TIM_ClockDivision=TIM_CKD_DIV1;			//分频方式1
+	TIM_TimeBaseInitStructure.TIM_CounterMode=TIM_CounterMode_Up;		//计数方式1, 从小到大
+	TIM_TimeBaseInitStructure.TIM_Period=arr;							//重装载值
+	TIM_TimeBaseInitStructure.TIM_Prescaler=psc;						//分频系数
+	TIM_TimeBaseInit(TIM2,&TIM_TimeBaseInitStructure);					//初始化
+	
+	TIM_OCInitStructure.TIM_OCMode=TIM_OCMode_PWM1;
+	TIM_OCInitStructure.TIM_OutputState=TIM_OutputState_Enable;
+	TIM_OCInitStructure.TIM_OCPolarity=TIM_OCPolarity_High;
+	TIM_OC1Init(TIM2,&TIM_OCInitStructure);
+	
+	TIM_OC1PreloadConfig(TIM2, TIM_OCPreload_Enable);  //使能TIM14在CCR1上的预装载寄存器
+	TIM_ARRPreloadConfig(TIM2,	ENABLE);//ARPE使能 
+	
+	TIM_Cmd(TIM2,ENABLE);
+	
+}
+
 /*--------------------
 函数功能:
 	TIM3中断执行函数, 执行PID计算并发出PID信号

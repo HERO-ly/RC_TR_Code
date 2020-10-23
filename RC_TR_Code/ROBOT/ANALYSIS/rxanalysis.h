@@ -9,6 +9,7 @@ typedef struct Motoinfo{
 	s16 speed;
 	s16 electric;
 	u8 temtpratrue;
+	u8 block_flag;
 }motoinfo;
 
 void RX_Analysis_Angle(u8 *msg,u32 StdId_Num);

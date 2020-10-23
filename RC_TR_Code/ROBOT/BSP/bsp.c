@@ -10,6 +10,7 @@
 
 void BSP_Init()
 {
+	u32 Door_PWM=1100;
 	LED_Init();															//红绿LED灯初始化
 	NVIC_PriorityGroupConfig(NVIC_PriorityGroup_2);						//中断分组
 	KEY_Init();															//按键初始化
@@ -19,6 +20,8 @@ void BSP_Init()
 	TIM3_CAN_SEND_Init(1000-1,84-1);									//1毫秒定时器
 	Kick_Init();
 	Close_underdoor();
+	TIM2_PWM_Init(20000-1,84-1);
+	TIM_SetCompare1(TIM2,Door_PWM);
 }
 
 

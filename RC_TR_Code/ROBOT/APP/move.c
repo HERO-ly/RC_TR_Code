@@ -18,7 +18,7 @@ void Move_Mode_Check()
 	
 	//TR_Control.TR_state这个才是对的
 //	switch(TTEST)
-	if(TR_Control.TR_state!=1) StopMove();
+	//if(TR_Control.TR_state!=1) StopMove();
 	switch(TR_Control.TR_state)
 	{
 		case 0:														//"0"模式   等待上位机发送信号 
@@ -28,9 +28,14 @@ void Move_Mode_Check()
 		}
 		case 1:														//"1" 模式  底盘运动
 		{
-			Speed_analysis();										//分析上位机传来的速度数据
 			Work_mode=1;	
 			Mode2_state = 0;
+//			TragetAngle[0]=-442500;
+//			TragetAngle[1]=-442500;
+//			TragetAngle[2]=442500;
+//			TragetAngle[3]=442500;
+			//Door_PWM=1100;
+			TIM_SetCompare1(TIM2,Door_PWM);
 			break;
 		}
 		case 2:														//"2" 模式  检查球有没有接到, 并且向上位机发送信息
@@ -53,19 +58,28 @@ void Move_Mode_Check()
 		}
 		case 5:														//"5"模式  电机上紧弹簧
 		{	
+			Door_PWM=2400;
+			TIM_SetCompare1(TIM2,Door_PWM);
 			Kick_UP();
 			Work_mode=5;
 			break;
 		}
-		case 6:														//"5"模式  电机释放弹簧
+		case 6:														//"6"模式  电机释放弹簧
 		{	
 			Kick_OUT();
 			Work_mode=6;
 			break;
 		}
+		case 7:
+		{
+			Door_PWM=1100;
+			TIM_SetCompare1(TIM2,Door_PWM);
+			break;
+		}
 		default:
 			break;
-	}SEND_PID();
+	}Speed_analysis();
+	SEND_PID();
 }
 
 /*--------------------
@@ -113,7 +127,7 @@ void Kick_OUT(void)
 {
 	extern motoinfo moto_dir_ctl[5];
 	
-	TAR_KICI_ANGLE=550000;
+	TAR_KICI_ANGLE=555000;
 	if(moto_dir_ctl[4].abs_angle>=TAR_KICI_ANGLE*0.99)
 	{
 		TAR_START=0;

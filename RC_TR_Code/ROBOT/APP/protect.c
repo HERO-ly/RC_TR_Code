@@ -45,14 +45,14 @@ void Check_Task(void)
 	{//CAN1出现错误
 			SetWorkState(LOST_CAN1_STATE);	
 	}
-	else if(Error_Check.statu[LOST_LEFT_FRONT_Angle]==1||Error_Check.statu[LOST_RIGHT_FRONT_Angle]==1||Error_Check.statu[LOST_RIGHT_BACK_Angle]==1||Error_Check.statu[LOST_LEFT_BACK_Angle]==1||Error_Check.statu[LOST_KICK]==1)
-	{//CAN2出现错误
-			SetWorkState(LOST_CAN2_STATE);	
-	}
-	else if(Error_Check.statu[LOST_TRANSMISSION]==1)
-	{//主副板 通信失败 
-		    SetWorkState(PROTECT_STATE);
-	}
+//	else if(Error_Check.statu[LOST_LEFT_FRONT_Angle]==1||Error_Check.statu[LOST_RIGHT_FRONT_Angle]==1||Error_Check.statu[LOST_RIGHT_BACK_Angle]==1||Error_Check.statu[LOST_LEFT_BACK_Angle]==1||Error_Check.statu[LOST_KICK]==1)
+//	{//CAN2出现错误
+//			SetWorkState(LOST_CAN2_STATE);	
+//	}
+//	else if(Error_Check.statu[LOST_TRANSMISSION]==1)
+//	{//主副板 通信失败 
+//		    SetWorkState(PROTECT_STATE);
+//	}
 }
 
 
